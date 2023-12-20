@@ -94,7 +94,7 @@ export async function getTopRated(type: string, page: number) {
       `https://api.themoviedb.org/3/${type}/top_rated?language=en-US&page=${page}`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -115,7 +115,7 @@ export async function getPopular(page: number, type: string) {
       `https://api.themoviedb.org/3/${type}/popular?language=en-US&page=${page}`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -137,7 +137,7 @@ export async function getMediaInfos(id: number, type: string) {
       `https://api.themoviedb.org/3/${type}/${id}?language=en-US`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -159,7 +159,7 @@ export async function getTrendings(period: string, type: 'tv' | 'movie') {
       `https://api.themoviedb.org/3//trending/${type}/${period}?language=en-US`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -192,7 +192,7 @@ export async function getRecommendations(id: number, type: string) {
       `https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -215,7 +215,7 @@ export async function getSearchResults(query: string, page: number) {
       `https://api.themoviedb.org/3//search/multi?query=${query}&include_adult=false&language=en-US&page=${page}`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -240,7 +240,7 @@ export async function getCredits(id: number, type: string) {
       `https://api.themoviedb.org/3/${type}/${id}/credits?language=en-US`,
       {
         headers: {
-          Authorization: process.env.API_TOKEN,
+          Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
         },
       },
     );
@@ -260,7 +260,7 @@ export async function getUpcoming(type: string | 'movie' | 'tv') {
   try {
     const res = axios.get(`https://api.themoviedb.org/3/${type}/upcoming?language=en-US&page=1`, {
       headers: {
-        Authorization: process.env.API_TOKEN,
+        Authorization: process.env.NEXT_PUBLIC_API_TOKEN,
       }
     });
     const data = (await res).data.results;
