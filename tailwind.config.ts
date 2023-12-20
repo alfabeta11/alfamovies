@@ -9,7 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        '13': 'repeat(13, minmax(0, 1fr))',
+        'auto-fit-lg': 'repeat(auto-fit, minmax(175px, 1fr))',
+        'auto-fit-md': 'repeat(auto-fit, minmax(200px, 1fr))',
       },
       colors: {
         blue: {
@@ -25,6 +26,15 @@ const config: Config = {
           transform: 'translateX(100%)',
         },
       },
+      fadeIn: {
+        '0%': {
+          opacity: '0',
+        },
+        '100%': {
+          opacity: '1'
+        }
+        
+      }
     },
   },
   plugins: [require('@tailwindcss/forms')],

@@ -1,5 +1,13 @@
-## Next.js App Router Course - Starter
+## Alfamovies
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+This is a nextjs - react - tailwindcss website movie application.
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+### Important notes
+
+Alfamovies does not host any movies directly. We aggregate links from
+third-party servers and provide a platform for users to access this
+content. We do not claim ownership of any movies, and the rights and
+ownership of all content remain with their respective creators,
+distributors, or copyright holders. Users are solely responsible for
+ensuring they have the necessary permissions to access and view the
+content in accordance with their local laws.

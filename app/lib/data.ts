@@ -1,231 +1,271 @@
-import { sql } from '@vercel/postgres';
-import {
-  CustomerField,
-  CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  User,
-  Revenue,
-} from './definitions';
-import { formatCurrency } from './utils';
+import axios from 'axios';
+import { data, genre, production } from './definitions';
 
-export async function fetchRevenue() {
-  // Add noStore() here prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
+// Genres
+export const genres = [
+  {
+    id: 28,
+    name: 'Action',
+  },
+  {
+    id: 12,
+    name: 'Adventure',
+  },
+  {
+    id: 16,
+    name: 'Animation',
+  },
+  {
+    id: 35,
+    name: 'Comedy',
+  },
+  {
+    id: 80,
+    name: 'Crime',
+  },
+  {
+    id: 99,
+    name: 'Documentary',
+  },
+  {
+    id: 18,
+    name: 'Drama',
+  },
+  {
+    id: 10751,
+    name: 'Family',
+  },
+  {
+    id: 14,
+    name: 'Fantasy',
+  },
+  {
+    id: 36,
+    name: 'History',
+  },
+  {
+    id: 27,
+    name: 'Horror',
+  },
+  {
+    id: 10402,
+    name: 'Musik',
+  },
+  {
+    id: 9648,
+    name: 'Mystery',
+  },
+  {
+    id: 10749,
+    name: 'Romantic',
+  },
+  {
+    id: 878,
+    name: 'Science Fiction',
+  },
+  {
+    id: 10770,
+    name: 'TV-Film',
+  },
+  {
+    id: 53,
+    name: 'Thriller',
+  },
+  {
+    id: 10752,
+    name: 'War',
+  },
+  {
+    id: 37,
+    name: 'Western',
+  },
+];
 
-  try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
-
-    return data.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
+// Get a specific genre
+export function getGenre(id: number | string) {
+  const genre = genres.filter((genre) => genre.id === id);
+  return genre[0];
 }
 
-export async function fetchLatestInvoices() {
-  try {
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
+export async function getTopRated(type: string, page: number) {
 
-    const latestInvoices = data.rows.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
-    }));
-    return latestInvoices;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/${type}/top_rated?language=en-US&page=${page}`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const data = await response.data.results;
+    return <data>{
+      data,
+      totalPages: response.data.total_pages,
+    };
+  } catch (err) {
+    console.log('Failed to load Top rated movies.', err);
   }
 }
-
-export async function fetchCardData() {
+// Popular movies
+export async function getPopular(page: number, type: string) {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
-
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
-
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
-
+    console.log('Fetching...');
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/${type}/popular?language=en-US&page=${page}`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const result = response.data;
+    const totalPages = result.total_pages;
     return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      data: await result.results,
+      totalPages,
     };
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
+    console.error('Failed to fetch Data: ');
   }
 }
-
-const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number,
-) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+// Get a specific media data
+export async function getMediaInfos(id: number, type: string) {
 
   try {
-    const invoices = await sql<InvoicesTable>`
-      SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return invoices.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
-  }
-}
-
-export async function fetchInvoicesPages(query: string) {
-  try {
-    const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-  `;
-
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
-  }
-}
-
-export async function fetchInvoiceById(id: string) {
-  try {
-    const data = await sql<InvoiceForm>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
-
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
-
-    return invoice[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
-  }
-}
-
-export async function fetchCustomers() {
-  try {
-    const data = await sql<CustomerField>`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `;
-
-    const customers = data.rows;
-    return customers;
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/${type}/${id}?language=en-US`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const result = await response.data;
+    const genres = result.genres.map((genre: genre) => genre.name).join(', ');
+    const productions = await result.production_companies
+      .map((production: production) => production.name)
+      .join(', ');
+    return { genres, productions, infos: result };
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all customers.');
+    console.error('Fail to get Media Infos: ', err);
   }
 }
-
-export async function fetchFilteredCustomers(query: string) {
+// Get movie/tv trendings
+export async function getTrendings(period: string, type: 'tv' | 'movie') {
   try {
-    const data = await sql<CustomersTableType>`
-		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
-		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
-	  `;
-
-    const customers = data.rows.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
-    }));
-
-    return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
-  }
-}
-
-export async function getUser(email: string) {
-  try {
-    const user = await sql`SELECT * FROM users WHERE email=${email}`;
-    return user.rows[0] as User;
+    console.log('Fetching...');
+    const response = await axios.get(
+      `https://api.themoviedb.org/3//trending/${type}/${period}?language=en-US`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const result = await response.data.results.filter(
+      (item: { poster_path: any; media_type: string }) =>
+        item.media_type !== 'person' && item.poster_path !== null,
+    );
+    // console.log('Filtering ' + type + ' Results Success.');
+    return result;
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    console.error('Failed to fetch Data: ', error);
+  }
+}
+
+// Get random trending movie;
+export async function getTrendingMovie() {
+  try {
+    const response = await getTrendings('day', 'movie');
+    console.log('done');
+    return response[Math.floor(Math.random() * 10)];
+  } catch (err) {
+    console.log('Failed to load Hero Movie.', err);
+    return err;
+  }
+}
+// get recommendations for a movie/tv id
+export async function getRecommendations(id: number, type: string) {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const result = await response.data;
+    const data = result.results.filter(
+      (item: { poster_path: any }, index: number) =>
+        item.poster_path !== (null || undefined) && index < 15,
+    );
+    console.log('Got the suggestions!');
+    return data;
+  } catch (err) {
+    console.log('Failed to get Recommendations for Movie: ', err);
+  }
+}
+// Search
+export async function getSearchResults(query: string, page: number) {
+  try {
+    console.log('Fetching...');
+    const response = await axios.get(
+      `https://api.themoviedb.org/3//search/multi?query=${query}&include_adult=false&language=en-US&page=${page}`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    console.log('Sucess!');
+    const result = response.data.results.filter(
+      (item: { poster_path: any; media_type: string }) =>
+        item.media_type !== 'person' && item.poster_path !== null,
+    );
+    const totalPages = response.data.total_pages;
+    return {
+      data: await result,
+      totalPages: totalPages,
+    };
+  } catch (error) {
+    console.error('Failed to fetch Data: ', error);
+  }
+}
+// Get credits for a movie/tv;
+export async function getCredits(id: number, type: string) {
+  try {
+    const res = await axios.get(
+      `https://api.themoviedb.org/3/${type}/${id}/credits?language=en-US`,
+      {
+        headers: {
+          Authorization: process.env.API_TOKEN,
+        },
+      },
+    );
+    const data = res.data.cast
+      .filter((_: any, index: number) => index < 5)
+      .map((item: any) => item.name)
+      .join(', ');
+    return data;
+  } catch (err) {
+    console.log('Fetching credits failed: ', err);
+    return err;
+  }
+};
+
+// Upcoming movies/tv (or maybe not so upcoming after all ;) )
+export async function getUpcoming(type: string | 'movie' | 'tv') {
+  try {
+    const res = axios.get(`https://api.themoviedb.org/3/${type}/upcoming?language=en-US&page=1`, {
+      headers: {
+        Authorization: process.env.API_TOKEN,
+      }
+    });
+    const data = (await res).data.results;
+    return data;
+  } catch (err) {
+    console.error('Failed to get upcomings: ', err);
   }
 }
