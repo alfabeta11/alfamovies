@@ -1,9 +1,13 @@
 import Link from 'next/link';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'Terms and Services',
+};
 export default function Page() {
   return (
-    <div className='my-4 lg:my-8 lg:text-justify lg:text-lg '>
-      <h1 className="bold mb-2 text-2xl text-slate-200 md:text-3xl font-bold">
+    <div className="my-4 lg:my-8 lg:text-justify lg:text-lg ">
+      <h1 className="bold mb-2 text-2xl font-bold text-slate-200 md:text-3xl">
         Terms of Service for{' '}
         <Link href="./" className="text-cyan-700 hover:text-cyan-400">
           alfamovies
@@ -18,7 +22,9 @@ export default function Page() {
         our services.
       </p>
 
-      <h2 className="text-xl text-slate-300 md:text-2xl font-semibold">Use of Content</h2>
+      <h2 className="text-xl font-semibold text-slate-300 md:text-2xl">
+        Use of Content
+      </h2>
       <p className="mb-4 mt-1 text-base text-slate-400">
         Alfamovies does not host any movies directly. We aggregate links from
         third-party servers and provide a platform for users to access this
@@ -29,7 +35,7 @@ export default function Page() {
         content in accordance with their local laws.
       </p>
 
-      <h2 className="text-xl text-slate-300 md:text-2xl font-semibold">
+      <h2 className="text-xl font-semibold text-slate-300 md:text-2xl">
         Third-Party Hosting
       </h2>
       <p className="mb-4 mt-1 text-base text-slate-400">
@@ -42,7 +48,7 @@ export default function Page() {
         access these external links at their own risk.
       </p>
 
-      <h2 className="text-xl text-slate-300 md:text-2xl font-semibold">
+      <h2 className="text-xl font-semibold text-slate-300 md:text-2xl">
         User Responsibilities
       </h2>
       <p className="mb-4 mt-1 text-base text-slate-400">
@@ -54,7 +60,9 @@ export default function Page() {
         activities or content associated with their account.
       </p>
 
-      <h2 className="text-xl text-slate-300 md:text-2xl font-semibold">Privacy Policy</h2>
+      <h2 className="text-xl font-semibold text-slate-300 md:text-2xl">
+        Privacy Policy
+      </h2>
       <p className="mb-4 mt-1 text-base text-slate-400">
         Alfamovies respects user privacy and is committed to protecting any
         personal information collected during your use of our services. We may

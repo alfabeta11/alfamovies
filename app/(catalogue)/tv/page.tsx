@@ -3,7 +3,11 @@ import { getPopular } from '@/app/lib/data';
 import Gallery from '@/app/ui/gallery';
 import { CardsSkeleton } from '@/app/ui/skeletons';
 import Pagination from '@/app/ui/pagination';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'TV Shows',
+};
 export default async function Page({
   searchParams,
 }: {

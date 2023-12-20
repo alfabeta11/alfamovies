@@ -4,8 +4,12 @@ import Gallery from '@/app/ui/gallery';
 import { CardsSkeleton } from '@/app/ui/skeletons';
 import Pagination from '@/app/ui/pagination';
 import Heading from '@/app/ui/heading';
-import { ArrowRightCircleIcon } from '@heroicons/react/24/solid';
 import Buttons from '@/app/ui/imdbButtons';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Top IMDB',
+};
 
 export default async function Page({
   searchParams,
