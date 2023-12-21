@@ -12,7 +12,8 @@ export default function Search() {
   const pathname = usePathname();
   const { replace } = useRouter();
   const initialState = {
-    success: true
+    success: true,
+    message: '',
   };
   const [state, dispatch] = useFormState(handleSearch, initialState);
   const errorRef = useRef(null);
