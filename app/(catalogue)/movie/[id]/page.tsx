@@ -5,6 +5,7 @@ import Heading from '@/app/ui/heading';
 import Suggestions from '@/app/ui/lector/suggestions';
 import { Metadata, ResolvingMetadata } from 'next';
 import { getMediaInfos } from '@/app/lib/data';
+import SearchResult from '@/app/ui/searchresult';
 
 type Props = {
   params: { id: string };
@@ -23,14 +24,22 @@ export async function generateMetadata(
   };
 }
 
-// export const metadata = {
-//   title: 'Watch movie for free'
-// }
-
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { query?: string };
+}) {
   const id = parseInt(params.id);
+  const query = searchParams.query || '';
   return (
     <>
+      {query !== '' && (
+        <Suspense>
+          <SearchResult query={query} />
+        </Suspense>
+      )}
       <Suspense fallback={<MediaSkeleton />}>
         <MediaInfo id={id} mediaType="movie" />
       </Suspense>
