@@ -4,20 +4,11 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { handleSearch } from '@/app/lib/actions';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useDebouncedCallback } from 'use-debounce';
-import { useFormState } from 'react-dom';
-import { useRef } from 'react';
 
 export default function Search() {
   const searchparams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const initialState = {
-    success: true,
-    message: '',
-  };
-  const [state, dispatch] = useFormState(handleSearch, initialState);
-  const errorRef = useRef(null);
-  
   const handleChange = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchparams);
 
@@ -30,7 +21,7 @@ export default function Search() {
   }, 300);
 
   return (
-    <form action={dispatch} className="relative">
+    <form action={handleSearch} className="relative">
       <input
         type="text"
         placeholder="Enter keyword..."
@@ -40,9 +31,9 @@ export default function Search() {
         autoComplete="off"
         name="query"
         onChange={(event) => handleChange(event.target.value)}
+        required
       />
       <MagnifyingGlassIcon className="absolute inset-1/2 left-2 h-6 w-6 -translate-y-1/2 bg-transparent text-slate-600 peer-hover:text-slate-300 peer-focus:text-slate-300" />
-      <p ref={errorRef.current} className='absolute left-0 text-sm text-red-600'>{!state.success ? state.message : ''}</p>
     </form>
   );
 }

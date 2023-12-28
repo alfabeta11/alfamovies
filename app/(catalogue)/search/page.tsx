@@ -13,19 +13,13 @@ export default async function Page({
 }: {
   searchParams: { page: string; keyword: string; query?: string };
 }) {
-  // To get the keyword/query of the search from the pathname;
-  // const headersList = headers();
-  // const fullUrl = headersList.get('referer') || '';
-  // const searchKeyword = fullUrl.split('/search/')[1];
-  // console.log(searchKeyword);
-  // const keyword = searchParams.keyword.split('-').join(' ');
   const keyword = searchParams.keyword;
-  console.log(keyword);
   const currentPage = Number(searchParams.page) || 1;
   const searchResults = await getSearchResults(keyword, currentPage);
   const totalPages = await searchResults?.totalPages;
   Promise.all([searchResults, totalPages]);
   const query = searchParams?.query || '';
+
   return (
     <>
       {query !== '' && (
@@ -34,12 +28,22 @@ export default async function Page({
         </Suspense>
       )}
       <Heading name="Search results" type="movie" />
-      <Suspense fallback={<CardsSkeleton />}>
-        <Gallery medias={searchResults?.data} />
-      </Suspense>
-      <Suspense fallback={<PaginationSkeleton />}>
-        <Pagination totalPages={totalPages} />
-      </Suspense>
+      {!keyword && (
+        <p>
+          Nothing was found! <br />
+          Please type something in search bar.{' '}
+        </p>
+      )}
+      {searchParams.keyword && (
+        <>
+          <Suspense fallback={<CardsSkeleton />}>
+            <Gallery medias={searchResults?.data} />
+          </Suspense>
+          <Suspense fallback={<PaginationSkeleton />}>
+            <Pagination totalPages={totalPages} />
+          </Suspense>
+        </>
+      )}
     </>
   );
 }

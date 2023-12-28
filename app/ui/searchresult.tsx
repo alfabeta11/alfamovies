@@ -42,7 +42,7 @@ export default async function SearchResult({ query }: { query: string }) {
           );
         })}
         <Link
-          href={`/search/${query}`}
+          href={`/search?keyword=${query}`}
           className="flex items-center justify-center bg-green-600 py-4 text-lg hover:bg-green-700"
         >
           View all results <ChevronRightIcon className="h-5 w-5" />{' '}

@@ -154,7 +154,6 @@ export async function getMediaInfos(id: number, type: string) {
 // Get movie/tv trendings
 export async function getTrendings(period: string, type: 'tv' | 'movie') {
   try {
-    console.log('Fetching...');
     const response = await axios.get(
       `https://api.themoviedb.org/3//trending/${type}/${period}?language=en-US`,
       {
@@ -178,7 +177,6 @@ export async function getTrendings(period: string, type: 'tv' | 'movie') {
 export async function getTrendingMovie() {
   try {
     const response = await getTrendings('day', 'movie');
-    console.log('done');
     return response[Math.floor(Math.random() * 10)];
   } catch (err) {
     console.log('Failed to load Hero Movie.', err);
@@ -210,7 +208,6 @@ export async function getRecommendations(id: number, type: string) {
 // Search
 export async function getSearchResults(query: string, page: number) {
   try {
-    console.log('Fetching...');
     const response = await axios.get(
       `https://api.themoviedb.org/3//search/multi?query=${query}&include_adult=false&language=en-US&page=${page}`,
       {
@@ -219,7 +216,6 @@ export async function getSearchResults(query: string, page: number) {
         },
       },
     );
-    console.log('Sucess!');
     const result = response.data.results.filter(
       (item: { poster_path: any; media_type: string }) =>
         item.media_type !== 'person' && item.poster_path !== null,
