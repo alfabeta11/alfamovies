@@ -19,6 +19,7 @@ export default async function Page({
   const currentPage = Number(searchParams?.page || 1);
   const result = await getPopular(currentPage, 'movie');
   const data = result?.data;
+  const pages = result?.totalPages || 1;
   const query = searchParams?.query || '';
   return (
     <>
@@ -32,7 +33,7 @@ export default async function Page({
         <Gallery medias={data} type="movie" />
       </Suspense>
 
-      <Pagination totalPages={500} />
+      <Pagination totalPages={pages} />
     </>
   );
 }

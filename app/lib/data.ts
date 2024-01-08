@@ -120,13 +120,13 @@ export async function getPopular(page: number, type: string) {
       },
     );
     const result = response.data;
-    const totalPages = result.total_pages;
+    const totalPages = result.total_pages >= 500 ? 500 : result.total_pages;
     return {
       data: await result.results,
-      totalPages,
+      totalPages: totalPages,
     };
   } catch (error) {
-    console.error('Failed to fetch Data: ');
+    console.error('Failed to fetch Data: ', error);
   }
 }
 // Get a specific media data

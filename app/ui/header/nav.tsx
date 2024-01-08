@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Bars3Icon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { DropdownItem } from "@/app/lib/definitions";
-import { genres } from '../../lib/data';
 
 const navlist = [
     { url: '/', name: 'Home' },
@@ -33,14 +32,17 @@ export default function Nav() {
       />
       <div
         className={clsx(
-          'z-90 absolute left-0 top-0 z-30 h-full w-max bg-slate-900',
+          'z-90 absolute left-0 top-0 z-30 h-full bg-transparent w-full',
           {
             block: navOpen,
             hidden: !navOpen,
           },
         )}
+        onClick={() => {
+          setNavOpen(!navOpen);
+        }}
       >
-        <div className="relative h-full w-full max-w-[350px] bg-slate-950 p-4 opacity-100 md:w-80">
+        <div className="relative h-full w-screen md:max-w-md bg-slate-950 p-4 opacity-100">
           <XMarkIcon
             className="mb-8 h-8 w-8 cursor-pointer"
             onClick={handleClick}
@@ -61,8 +63,6 @@ export function NavList({ className }: { className: string }) {
             key={item.name}
             url={item.url}
             name={item.name}
-            // hasDropdown={item?.hasDropdown}
-            // dropdownContent={item?.dropdownContent}
           />
         );
       })}

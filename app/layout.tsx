@@ -3,6 +3,7 @@ import Header from '@/app/ui/header/header';
 import { roboto } from './ui/fonts';
 import Footer from './ui/footer/footer';
 import { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: {
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Header />
         <main className="relative">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
