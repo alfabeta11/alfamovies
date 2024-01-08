@@ -23,15 +23,7 @@ export default function Buttons() {
     <div className="flex gap-2">
       <Link
         href={createPage('movie')}
-        className={clsx(
-          'flex items-center gap-2 rounded-md border-2 border-cyan-400 px-4 py-2',
-          {
-            'bg-cyan-400 text-cyan-950 hover:bg-cyan-950 hover:text-cyan-400':
-              isActive,
-            'bg-cyan-950 text-cyan-400 hover:bg-cyan-400 hover:text-cyan-950':
-              !isActive,
-          },
-        )}
+        className='flex items-center gap-2 rounded-md border-2 border-cyan-400 bg-cyan-400 px-4 py-2 text-cyan-950 hover:bg-cyan-950 hover:text-cyan-400'
       >
         Movies
         <ArrowRightCircleIcon className="h-4 w-4" />
