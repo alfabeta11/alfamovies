@@ -46,31 +46,3 @@ export default function Buttons() {
     </div>
   );
 }
-// function Button({
-//   name,
-//   url,
-//   isActive,
-// }: {
-//   name: string;
-//   url: string;
-//   isActive: boolean;
-// }) {
-//   return (
-//     <Link
-//       href={url}
-//       className={clsx(
-//         'flex items-center gap-2 rounded-md border-2 border-cyan-400 px-4 py-2',
-//         {
-//           'bg-cyan-400 text-cyan-950 hover:bg-cyan-950 hover:text-cyan-400':
-//             isActive,
-//           'bg-cyan-950 text-cyan-400 hover:bg-cyan-400 hover:text-cyan-950':
-//             !isActive,
-//         },
-//       )}
-//       defaultValue={name == 'Movies' ? 'movie' : 'tv'}
-//     >
-//       {name}
-//       <ArrowRightCircleIcon className="h-4 w-4" />
-//     </Link>
-//   );
-// }
