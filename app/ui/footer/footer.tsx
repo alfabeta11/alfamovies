@@ -34,7 +34,7 @@ export default function Footer() {
         <PlayCircleIcon className="h-8 w-8" />
         <span className="block pl-2 font-thin lowercase">Alfamovies</span>
       </Link>
-      <ul className="flex flex-initial shrink-0 justify-center divide-x-2 divide-slate-500 pt-4 md:py-0">
+      <ul className="flex flex-initial items-center shrink-0 justify-center divide-x-2 divide-slate-500 py-4 md:py-0">
         {footerLinks.map((item: link) => {
           return (
             <li key={item.name} className="px-2">
@@ -55,6 +55,3 @@ export default function Footer() {
     </footer>
   );
 }
-/**
- * <iframe src="https://www.2embed.cc/embed/tt22041854" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>
- */

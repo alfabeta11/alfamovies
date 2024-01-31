@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   description: 'Streaming movies, tv shows and animations for free.',
   category: 'Video Streaming Website',
-  keywords: 'streaming, movies, tv shows, free online movies, alfamovies, animations',
+  keywords: 'streaming, movies, tv shows, free online movies, alfamovies, animations, alpha movies, alphamovies, alpha, tv, shows, alfamovies.com, alfamovies.app, alfamovies.vercel',
 };
 
 export default function RootLayout({

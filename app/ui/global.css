@@ -49,7 +49,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
   .grid-auto {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
   }
   
 }
